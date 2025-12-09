@@ -1,15 +1,13 @@
 package datastructures
 
-import "sync"
-
 type Item struct {
 	Value *Unit
 	Score float64
 }
 
 type MinHeap struct {
-	data  []*Item
-	mutex sync.RWMutex
+	BaseStructure
+	data []*Item
 }
 
 func NewMinHeap() *MinHeap {
@@ -18,58 +16,58 @@ func NewMinHeap() *MinHeap {
 	}
 }
 
-func (heap *MinHeap) Len() int {
-	heap.mutex.RLock()
-	defer heap.mutex.RUnlock()
-	return len(heap.data)
+func (minHeap *MinHeap) Size() int {
+	minHeap.mutex.RLock()
+	defer minHeap.mutex.RUnlock()
+	return len(minHeap.data)
 }
 
-func (heap *MinHeap) Push(item *Item) {
-	heap.mutex.Lock()
-	defer heap.mutex.Unlock()
-	heap.data = append(heap.data, item)
-	heap.up(len(heap.data) - 1)
+func (minHeap *MinHeap) Push(item *Item) {
+	minHeap.mutex.Lock()
+	defer minHeap.mutex.Unlock()
+	minHeap.data = append(minHeap.data, item)
+	minHeap.up(len(minHeap.data) - 1)
 }
 
-func (heap *MinHeap) Pop() *Item {
-	heap.mutex.Lock()
-	defer heap.mutex.Unlock()
-	n := len(heap.data) - 1
+func (minHeap *MinHeap) Pop() *Item {
+	minHeap.mutex.Lock()
+	defer minHeap.mutex.Unlock()
+	n := len(minHeap.data) - 1
 	if n < 0 {
 		return nil
 	}
 
-	heap.data[0], heap.data[n] = heap.data[n], heap.data[0]
+	minHeap.data[0], minHeap.data[n] = minHeap.data[n], minHeap.data[0]
 
-	item := heap.data[n]
-	heap.data = heap.data[:n]
+	item := minHeap.data[n]
+	minHeap.data = minHeap.data[:n]
 
-	heap.down(0, len(heap.data))
+	minHeap.down(0, len(minHeap.data))
 
 	return item
 }
 
-func (heap *MinHeap) Peek() *Item {
-	heap.mutex.RLock()
-	defer heap.mutex.RUnlock()
-	if len(heap.data) == 0 {
+func (minHeap *MinHeap) Peek() *Item {
+	minHeap.mutex.RLock()
+	defer minHeap.mutex.RUnlock()
+	if len(minHeap.data) == 0 {
 		return nil
 	}
-	return heap.data[0]
+	return minHeap.data[0]
 }
 
-func (heap *MinHeap) up(j int) {
+func (minHeap *MinHeap) up(j int) {
 	for {
 		i := (j - 1) / 2
-		if i == j || heap.data[i].Score <= heap.data[j].Score {
+		if i == j || minHeap.data[i].Score <= minHeap.data[j].Score {
 			break
 		}
-		heap.data[i], heap.data[j] = heap.data[j], heap.data[i]
+		minHeap.data[i], minHeap.data[j] = minHeap.data[j], minHeap.data[i]
 		j = i
 	}
 }
 
-func (heap *MinHeap) down(i0, n int) bool {
+func (minHeap *MinHeap) down(i0, n int) bool {
 	i := i0
 	for {
 		j1 := 2*i + 1
@@ -78,22 +76,22 @@ func (heap *MinHeap) down(i0, n int) bool {
 		}
 		j := j1
 
-		if j2 := j1 + 1; j2 < n && heap.data[j2].Score < heap.data[j1].Score {
+		if j2 := j1 + 1; j2 < n && minHeap.data[j2].Score < minHeap.data[j1].Score {
 			j = j2
 		}
 
-		if heap.data[j].Score >= heap.data[i].Score {
+		if minHeap.data[j].Score >= minHeap.data[i].Score {
 			break
 		}
 
-		heap.data[i], heap.data[j] = heap.data[j], heap.data[i]
+		minHeap.data[i], minHeap.data[j] = minHeap.data[j], minHeap.data[i]
 		i = j
 	}
 	return i > i0
 }
 
-func (heap *MinHeap) Clear() {
-	heap.mutex.Lock()
-	defer heap.mutex.Unlock()
-	heap.data = make([]*Item, 0, 100)
+func (minHeap *MinHeap) Clear() {
+	minHeap.mutex.Lock()
+	defer minHeap.mutex.Unlock()
+	minHeap.data = make([]*Item, 0, 100)
 }

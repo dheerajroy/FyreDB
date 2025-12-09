@@ -1,55 +1,53 @@
 package datastructures
 
-import "sync"
-
 type HashMap struct {
-	data map[string]any
-	mu   sync.RWMutex
+	BaseStructure
+	data map[string]*Unit
 }
 
 func NewHashMap() *HashMap {
 	return &HashMap{
-		data: make(map[string]any),
+		data: make(map[string]*Unit),
 	}
 }
 
-func (hm *HashMap) Set(key string, value any) {
-	hm.mu.Lock()
-	defer hm.mu.Unlock()
-	hm.data[key] = value
+func (hashmap *HashMap) Set(key string, value *Unit) {
+	hashmap.mutex.Lock()
+	defer hashmap.mutex.Unlock()
+	hashmap.data[key] = value
 }
 
-func (hm *HashMap) Get(key string) (any, bool) {
-	hm.mu.RLock()
-	defer hm.mu.RUnlock()
-	value, exists := hm.data[key]
+func (hashmap *HashMap) Get(key string) (*Unit, bool) {
+	hashmap.mutex.RLock()
+	defer hashmap.mutex.RUnlock()
+	value, exists := hashmap.data[key]
 	return value, exists
 }
 
-func (hm *HashMap) Delete(key string) {
-	hm.mu.Lock()
-	defer hm.mu.Unlock()
-	delete(hm.data, key)
+func (hashmap *HashMap) Delete(key string) {
+	hashmap.mutex.Lock()
+	defer hashmap.mutex.Unlock()
+	delete(hashmap.data, key)
 }
 
-func (hm *HashMap) Keys() []string {
-	hm.mu.RLock()
-	defer hm.mu.RUnlock()
-	keys := make([]string, 0, len(hm.data))
-	for key := range hm.data {
+func (hashmap *HashMap) Keys() []string {
+	hashmap.mutex.RLock()
+	defer hashmap.mutex.RUnlock()
+	keys := make([]string, 0, len(hashmap.data))
+	for key := range hashmap.data {
 		keys = append(keys, key)
 	}
 	return keys
 }
 
-func (hm *HashMap) Size() int {
-	hm.mu.RLock()
-	defer hm.mu.RUnlock()
-	return len(hm.data)
+func (hashmap *HashMap) Size() int {
+	hashmap.mutex.RLock()
+	defer hashmap.mutex.RUnlock()
+	return len(hashmap.data)
 }
 
-func (hm *HashMap) Clear() {
-	hm.mu.Lock()
-	defer hm.mu.Unlock()
-	hm.data = make(map[string]any)
+func (hashmap *HashMap) Clear() {
+	hashmap.mutex.Lock()
+	defer hashmap.mutex.Unlock()
+	hashmap.data = make(map[string]*Unit)
 }

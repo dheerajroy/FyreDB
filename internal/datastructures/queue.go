@@ -1,10 +1,8 @@
 package datastructures
 
-import "sync"
-
 type Queue struct {
+	BaseStructure
 	data []*Unit
-	mutex   sync.RWMutex
 }
 
 func NewQueue() *Queue {
@@ -13,46 +11,46 @@ func NewQueue() *Queue {
 	}
 }
 
-func (q *Queue) Enqueue(value any) {
-	q.mutex.Lock()
-	defer q.mutex.Unlock()
-	q.data = append(q.data, NewUnit(value))
+func (queue *Queue) Enqueue(unit *Unit) {
+	queue.mutex.Lock()
+	defer queue.mutex.Unlock()
+	queue.data = append(queue.data, unit)
 }
 
-func (q *Queue) Dequeue() (any, bool) {
-	q.mutex.Lock()
-	defer q.mutex.Unlock()
-	if len(q.data) == 0 {
+func (queue *Queue) Dequeue() (*Unit, bool) {
+	queue.mutex.Lock()
+	defer queue.mutex.Unlock()
+	if len(queue.data) == 0 {
 		return nil, false
 	}
-	value := q.data[0]
-	q.data = q.data[1:]
-	return value, true
+	unit := queue.data[0]
+	queue.data = queue.data[1:]
+	return unit, true
 }
 
-func (q *Queue) Peek() (any, bool) {
-	q.mutex.RLock()
-	defer q.mutex.RUnlock()
-	if len(q.data) == 0 {
+func (queue *Queue) Peek() (*Unit, bool) {
+	queue.mutex.RLock()
+	defer queue.mutex.RUnlock()
+	if len(queue.data) == 0 {
 		return nil, false
 	}
-	return q.data[0], true
+	return queue.data[0], true
 }
 
-func (q *Queue) Size() int {
-	q.mutex.RLock()
-	defer q.mutex.RUnlock()
-	return len(q.data)
+func (queue *Queue) Size() int {
+	queue.mutex.RLock()
+	defer queue.mutex.RUnlock()
+	return len(queue.data)
 }
 
-func (q *Queue) IsEmpty() bool {
-	q.mutex.RLock()
-	defer q.mutex.RUnlock()
-	return len(q.data) == 0
+func (queue *Queue) IsEmpty() bool {
+	queue.mutex.RLock()
+	defer queue.mutex.RUnlock()
+	return len(queue.data) == 0
 }
 
-func (q *Queue) Clear() {
-	q.mutex.Lock()
-	defer q.mutex.Unlock()
-	q.data = make([]*Unit, 0, 100)
+func (queue *Queue) Clear() {
+	queue.mutex.Lock()
+	defer queue.mutex.Unlock()
+	queue.data = make([]*Unit, 0, 100)
 }

@@ -18,16 +18,16 @@ func NewUnit(value any) *Unit {
 	}
 }
 
-func (u *Unit) GetValue() any {
-	u.mutex.Lock()
-	defer u.mutex.Unlock()
-	u.lastAccess = time.Now().UnixMilli()
-	return u.value
+func (unit *Unit) GetValue() any {
+	unit.mutex.Lock()
+	defer unit.mutex.Unlock()
+	unit.lastAccess = time.Now().UnixMilli()
+	return unit.value
 }
 
-func (u *Unit) SetValue(value any) {
-	u.mutex.Lock()
-	defer u.mutex.Unlock()
-	u.value = value
-	u.lastAccess = time.Now().UnixMilli()
+func (unit *Unit) SetValue(value any) {
+	unit.mutex.Lock()
+	defer unit.mutex.Unlock()
+	unit.value = value
+	unit.lastAccess = time.Now().UnixMilli()
 }
