@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/dheerajroy/fyredb/internal/database"
 
 func main() {
-	fmt.Println("Welcome to Fyredb!")
+	database.Handle()
 }
